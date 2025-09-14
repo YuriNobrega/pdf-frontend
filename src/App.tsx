@@ -11,6 +11,7 @@ import {
 
 import Grid from "@mui/material/Grid";
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 
@@ -194,7 +195,7 @@ export default function App() {
     });
   
     const response = await fetch(
-      `http://localhost:8000/api/pdf/${selectedForm}`,
+      `${API_URL}/api/pdf/${selectedForm}`,
       {
         method: "POST",
         body: form, 
