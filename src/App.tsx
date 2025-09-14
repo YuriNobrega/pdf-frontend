@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Container,
   Typography,
-  Grid,
   Card,
   CardActionArea,
   CardContent,
   Button,
   TextField,
 } from "@mui/material";
+
+import Grid from "@mui/material/Grid";
+
+
+
 
 type FormType =
   | "comunicado-venda"
@@ -17,7 +21,6 @@ type FormType =
   | "alter-carac"
   | "segunda-via"
   | "req-int-venda"
-  | "crv-segunda-via"
   | "declaracao-motor"
   | "cancelamento-venda";
 
@@ -148,6 +151,30 @@ const formConfigs: Record<
       { name: "Ano", label: "Ano" },
     ],
   },
+  "req-int-venda": {
+    label: "Requerimento de Intenção de Venda",
+    fields: [
+      { name: "VendaName", label: "Nome do Vendedor" },
+      { name: "VendaDoc", label: "CPF/CNPJ Vendedor" },
+      { name: "VendaAddress", label: "Endereço do Vendedor" },
+      { name: "VendaCity", label: "Cidade do Vendedor" },
+      { name: "VendaEmail", label: "E-mail do Vendedor" },
+      { name: "CompraName", label: "Nome do Comprador" },
+      { name: "CompraCPF", label: "CPF/CNPJ do Comprador" },
+      { name: "CompraAddress", label: "Endereço do Comprador" },
+      { name: "CompraCity", label: "Cidade do Comprador" },
+      { name: "Placa", label: "Placa" },
+      { name: "Renavam", label: "Renavam" },
+      { name: "Value", label: "Valor" },
+      { name: "Day", label: "Dia" },
+      { name: "Month", label: "Mês" },
+      { name: "Year", label: "Ano" },
+      { name: "DocumentCity", label: "Cidade do documento" },
+      { name: "MonthName", label: "Mês do documento" },
+      { name: "SignatureDay", label: "Dia da assinatura" },
+      { name: "SignatureYear", label: "Ano de Assinatura" },
+    ],
+  },
 };
 
 export default function App() {
@@ -192,6 +219,7 @@ export default function App() {
           </Typography>
           <Grid container spacing={2}>
             {Object.entries(formConfigs).map(([key, cfg]) => (
+              // @ts-ignore
               <Grid item xs={12} sm={6} md={4} key={key}>
                 <Card>
                   <CardActionArea onClick={() => setSelectedForm(key as FormType)}>
@@ -211,6 +239,7 @@ export default function App() {
           </Typography>
           <Grid container spacing={2}>
             {formConfigs[selectedForm].fields.map((field) => (
+              // @ts-ignore
               <Grid item xs={12} sm={6} key={field.name}>
                 <TextField
                   fullWidth
