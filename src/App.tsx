@@ -161,9 +161,10 @@ const formConfigs: Record<
       { name: "VendaCity", label: "Cidade do Vendedor" },
       { name: "VendaEmail", label: "E-mail do Vendedor" },
       { name: "CompraName", label: "Nome do Comprador" },
-      { name: "CompraCPF", label: "CPF/CNPJ do Comprador" },
+      { name: "CompraDoc", label: "CPF/CNPJ do Comprador" },
       { name: "CompraAddress", label: "Endereço do Comprador" },
       { name: "CompraCity", label: "Cidade do Comprador" },
+      { name: "CompraEmail", label: "E-mail do Comprador"}
       { name: "Placa", label: "Placa" },
       { name: "Renavam", label: "Renavam" },
       { name: "Value", label: "Valor" },
