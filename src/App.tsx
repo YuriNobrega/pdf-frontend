@@ -252,7 +252,7 @@ export default function App() {
           </Typography>
           <Grid container spacing={2}>
             {Object.entries(formConfigs).map(([key, cfg]) => (
-              <Grid item xs={12} sm={6} md={4} key={key}>
+              <Grid sx={{ xs: 12, sm: 6, md: 4 }} key={key}>
                 <Card>
                   <CardActionArea
                     onClick={() => setSelectedForm(key as FormType)}
@@ -273,7 +273,7 @@ export default function App() {
           </Typography>
           <Grid container spacing={2}>
             {formConfigs[selectedForm].fields.map((field: any) => (
-              <Grid item xs={12} sm={6} key={field.name}>
+              <Grid sx={{ xs: 12, sm: 6 }} key={field.name}>
                 {field.type === "select" ? (
                   <Select
                     fullWidth
