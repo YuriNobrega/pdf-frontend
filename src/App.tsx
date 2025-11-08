@@ -20,7 +20,7 @@ type FormType =
   | "cancelamento-intencao-venda"
   | "declaracao-endereco"
   | "alter-carac"
-  | "segunda-via"
+  | "crv-segunda-via"
   | "req-int-venda"
   | "declaracao-motor"
   | "cancelamento-venda";
@@ -103,7 +103,7 @@ const formConfigs: Record<
       { name: "Ano", label: "Ano" },
     ],
   },
-  "segunda-via": {
+  "crv-segunda-via": {
     label: "Requerimento Segunda Via",
     fields: [
       { name: "Nome", label: "Nome" },
