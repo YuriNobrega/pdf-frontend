@@ -7,13 +7,12 @@ import {
   CardContent,
   Button,
   TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
-
 import Grid from "@mui/material/Grid";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-
 
 type FormType =
   | "comunicado-venda"
@@ -27,7 +26,18 @@ type FormType =
 
 const formConfigs: Record<
   FormType,
-  { label: string; fields: { name: string; label: string }[] }
+  {
+    label: string;
+    fields: (
+      | { name: string; label: string; type?: "text" }
+      | {
+          name: string;
+          label: string;
+          type: "select";
+          options: { value: string; label: string }[];
+        }
+    )[];
+  }
 > = {
   "comunicado-venda": {
     label: "Comunicado de Venda",
@@ -107,10 +117,21 @@ const formConfigs: Record<
     label: "Requerimento Segunda Via",
     fields: [
       { name: "Nome", label: "Nome" },
+      { name: "RG", label: "RG" },
       { name: "CPF_CNPJ", label: "CPF/CNPJ" },
-      { name: "Telefone", label: "Telefone" },
       { name: "Placa", label: "Placa" },
       { name: "Renavam", label: "Renavam" },
+      {
+        name: "motivo",
+        label: "Motivo da Solicitação",
+        type: "select",
+        options: [
+          { value: "PerdaExtravio", label: "Perda/Extravio" },
+          { value: "RasuraErro", label: "Rasura/Erro" },
+          { value: "Pericia", label: "Perícia" },
+          { value: "Outros", label: "Outros" },
+        ],
+      },
       { name: "Cidade", label: "Cidade" },
       { name: "Dia", label: "Dia" },
       { name: "Mes", label: "Mês" },
@@ -164,7 +185,7 @@ const formConfigs: Record<
       { name: "CompraDoc", label: "CPF/CNPJ do Comprador" },
       { name: "CompraAddress", label: "Endereço do Comprador" },
       { name: "CompraCity", label: "Cidade do Comprador" },
-      { name: "CompraEmail", label: "E-mail do Comprador"},
+      { name: "CompraEmail", label: "E-mail do Comprador" },
       { name: "Placa", label: "Placa" },
       { name: "Renavam", label: "Renavam" },
       { name: "Value", label: "Valor" },
@@ -189,20 +210,30 @@ export default function App() {
 
   const handleSubmit = async () => {
     if (!selectedForm) return;
-  
+
+    let dataToSend = { ...formData };
+
+    // Transforma o motivo selecionado em booleanos
+    if (selectedForm === "crv-segunda-via" && dataToSend.motivo) {
+      const motivo = dataToSend.motivo;
+      delete dataToSend.motivo;
+
+      dataToSend.PerdaExtravio = motivo === "PerdaExtravio" ? "true" : "false";
+      dataToSend.RasuraErro = motivo === "RasuraErro" ? "true" : "false";
+      dataToSend.Pericia = motivo === "Pericia" ? "true" : "false";
+      dataToSend.Outros = motivo === "Outros" ? "true" : "false";
+    }
+
     const form = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
+    Object.entries(dataToSend).forEach(([key, value]) => {
       form.append(key, value);
     });
-  
-    const response = await fetch(
-      `${API_URL}/api/pdf/${selectedForm}`,
-      {
-        method: "POST",
-        body: form, 
-      }
-    );
-  
+
+    const response = await fetch(`${API_URL}/api/pdf/${selectedForm}`, {
+      method: "POST",
+      body: form,
+    });
+
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -221,10 +252,11 @@ export default function App() {
           </Typography>
           <Grid container spacing={2}>
             {Object.entries(formConfigs).map(([key, cfg]) => (
-              // @ts-ignore
               <Grid item xs={12} sm={6} md={4} key={key}>
                 <Card>
-                  <CardActionArea onClick={() => setSelectedForm(key as FormType)}>
+                  <CardActionArea
+                    onClick={() => setSelectedForm(key as FormType)}
+                  >
                     <CardContent>
                       <Typography variant="h6">{cfg.label}</Typography>
                     </CardContent>
@@ -240,15 +272,34 @@ export default function App() {
             {formConfigs[selectedForm].label}
           </Typography>
           <Grid container spacing={2}>
-            {formConfigs[selectedForm].fields.map((field) => (
-              // @ts-ignore
+            {formConfigs[selectedForm].fields.map((field: any) => (
               <Grid item xs={12} sm={6} key={field.name}>
-                <TextField
-                  fullWidth
-                  label={field.label}
-                  value={formData[field.name] || ""}
-                  onChange={(e) => handleChange(field.name, e.target.value)}
-                />
+                {field.type === "select" ? (
+                  <Select
+                    fullWidth
+                    label={field.label}
+                    value={formData[field.name] || ""}
+                    onChange={(e) => handleChange(field.name, e.target.value)}
+                  >
+                    <MenuItem value="">
+                      <em>Selecione uma opção</em>
+                    </MenuItem>
+                    {field.options?.map((opt: any) => (
+                      <MenuItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                ) : (
+                  <TextField
+                    fullWidth
+                    label={field.label}
+                    value={formData[field.name] || ""}
+                    onChange={(e) =>
+                      handleChange(field.name, e.target.value)
+                    }
+                  />
+                )}
               </Grid>
             ))}
           </Grid>
